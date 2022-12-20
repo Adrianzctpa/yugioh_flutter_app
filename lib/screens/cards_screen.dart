@@ -11,13 +11,11 @@ class CardsScreen extends StatefulWidget {
 }
 
 class CardsScreenState extends State<CardsScreen> {
-
-  void providerFunc() {
-    Provider.of<Cards>(context, listen: false).loadCards();
-  }
-  
   @override
   Widget build(BuildContext context) {
+    final ctx = Provider.of<Cards>(context, listen: true);
+    final bool isButtonDisabled = ctx.shouldBeDisabled;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('YuGiOh Demo Home Page'),
@@ -25,8 +23,33 @@ class CardsScreenState extends State<CardsScreen> {
       body: Center(
         child: Column(
           children: [
-            ElevatedButton(onPressed: providerFunc, child: const Text('Hello World')),
-            const Expanded(child: ShowCards()),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                IconButton(
+                  onPressed: isButtonDisabled ? null : () => ctx.loadCards(url: ctx.nextAndPrev['prev']), 
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: isButtonDisabled ? Colors.grey : Colors.blue,
+                  )          
+                ),
+                ElevatedButton(onPressed: () => ctx.loadCards(), child: const Text('Load cards')),
+                IconButton(
+                  onPressed: isButtonDisabled ? null : () => ctx.loadCards(url: ctx.nextAndPrev['next']), 
+                  icon: Icon(
+                    Icons.arrow_forward,
+                    color: isButtonDisabled ? Colors.grey : Colors.blue,
+                  )          
+                ),
+              ],
+            ),
+            Expanded(
+              child: Column(
+                children: const [
+                  Expanded(child: ShowCards()),
+                ],
+              ),
+            ),
           ],
         ),
       ),

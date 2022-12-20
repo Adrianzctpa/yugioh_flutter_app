@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:path/path.dart' as path;
+import 'package:yugioh_flutter_app/models/card_image.dart';
 
 class DBUtil {
 
@@ -17,18 +18,32 @@ class DBUtil {
     final joinedPath = path.join(dbPath, 'cool_locations.db');
     return sql.openDatabase(joinedPath, version: 1, onCreate: (db, version) async {
       await db.execute(
-        "CREATE TABLE card_images (id INT NOT NULL, image_url[], image_url_small TEXT[])"
+        "CREATE TABLE card_images (id INT NOT NULL, image_url TEXT[], image_url_small TEXT[])"
       );
     });
   }
 
-  Future<void> insert(String table, Map<String, Object> data) async {
+  Future<void> insert(CardImage image) async {
     final dbClient = await database;
-    await dbClient.insert(table, data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
+
+    await dbClient.insert(
+      'card_images',
+      {
+        'id': image.id,
+        'image_url': '${image.imageUrl}',
+        'image_url_small': '${image.imageUrlSmall}',
+      },
+      conflictAlgorithm: sql.ConflictAlgorithm.replace,
+    );
   }
 
-  Future<List<Map<String, dynamic>>> getData(String table) async {
+  Future<List<Map<String, dynamic>>> getData() async {
     final dbClient = await database;
-    return dbClient.query(table);
+    return dbClient.query('card_images');
   } 
+
+  Future<List<Map<String, Object?>>> getCardImage(int id) async {
+    final dbClient = await database;
+    return dbClient.query('card_images', where: 'id = ?', whereArgs: [id]);
+  }
 }
