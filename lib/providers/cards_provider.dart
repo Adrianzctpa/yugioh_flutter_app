@@ -12,22 +12,11 @@ class Cards with ChangeNotifier {
   static const String _baseUrl = 'http://192.168.1.3:4000';
   List<YgoCard> _cards = [];
 
-  bool _shouldBeDisabled = true;
-
-  bool get shouldBeDisabled => _shouldBeDisabled;
-
   String? _next;
   String? _prev;
 
-  Map<String, String?> get nextAndPrev => {
-    'next': _next,
-    'prev': _prev,
-  };
-
-  void setDisable(bool val) {
-    _shouldBeDisabled = val;
-    notifyListeners();
-  }
+  String? get next => _next;
+  String? get prev => _prev;
 
   Future<http.Response> fetchCards({int? page, int? qSize, String? url}) async {
     return url != null ? http.get(Uri.parse('$_baseUrl$url')) : http.get(Uri.parse('$_baseUrl/cards/?page=$page&query_size=$qSize'));
@@ -69,16 +58,15 @@ class Cards with ChangeNotifier {
   }
 
   Future<void> loadCards({int? page, int? qSize, String? url}) async {
-    setDisable(true);
+    _prev = null;
+    _next = null;
+    
     page =  page ?? 1;
     qSize = qSize ?? 20;
     
     final cards = url != null ? await fetchCards(url: url) : await fetchCards(page: page, qSize: qSize);
     final Map<String, dynamic> response = jsonDecode(cards.body);
     _cards = [];
-
-    _next = response["data"]["next"];
-    _prev = response["data"]["prev"];
 
     for (final card in response['data']['cards']) {  
       final check = await DBUtil().getCardImage(card['id']);
@@ -107,7 +95,9 @@ class Cards with ChangeNotifier {
 
       _cards.add(YgoCard.fromJson(card));
     }
-    setDisable(false);
+
+    _next = response["data"]["next"];
+    _prev = response["data"]["prev"];
 
     notifyListeners();
   }

@@ -14,7 +14,8 @@ class CardsScreenState extends State<CardsScreen> {
   @override
   Widget build(BuildContext context) {
     final ctx = Provider.of<Cards>(context, listen: true);
-    final bool isButtonDisabled = ctx.shouldBeDisabled;
+    final String? prev = ctx.prev;
+    final String? next = ctx.next;
 
     return Scaffold(
       appBar: AppBar(
@@ -27,29 +28,25 @@ class CardsScreenState extends State<CardsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 IconButton(
-                  onPressed: isButtonDisabled ? null : () => ctx.loadCards(url: ctx.nextAndPrev['prev']), 
+                  onPressed: prev == null ? null : () => ctx.loadCards(url: prev), 
                   icon: Icon(
                     Icons.arrow_back,
-                    color: isButtonDisabled ? Colors.grey : Colors.blue,
+                    color: prev == null ? Colors.grey : Colors.blue,
                   )          
                 ),
                 ElevatedButton(onPressed: () => ctx.loadCards(), child: const Text('Load cards')),
                 IconButton(
-                  onPressed: isButtonDisabled ? null : () => ctx.loadCards(url: ctx.nextAndPrev['next']), 
+                  onPressed: next == null ? null : () => ctx.loadCards(url: next), 
                   icon: Icon(
                     Icons.arrow_forward,
-                    color: isButtonDisabled ? Colors.grey : Colors.blue,
+                    color: next == null ? Colors.grey : Colors.blue,
                   )          
                 ),
               ],
             ),
-            Expanded(
-              child: Column(
-                children: const [
-                  Expanded(child: ShowCards()),
-                ],
-              ),
-            ),
+            const Expanded(
+              child: ShowCards()
+            )
           ],
         ),
       ),

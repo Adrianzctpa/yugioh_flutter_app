@@ -10,25 +10,17 @@ class ShowCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cards = Provider.of<Cards>(context).cards;
-    return ListView.builder(
-      itemCount: cards.length,
-      itemBuilder: (context, index) {
-        return Card(
-          child: ListTile(
-            leading: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-                maxWidth: 64,
-                maxHeight: 64,
-              ),
-              child: Image.file(File(cards[index].imageUrlSmall[0]))
-            ),
-            title: Text(cards[index].cardName),
-            subtitle: Text(cards[index].description),
-          ),
-        );
-      },
+    return GridView.count(
+      crossAxisCount: 2,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      children: [
+        for (var card in cards)
+          GestureDetector(
+            onTap: () => Navigator.of(context).pushNamed('/details', arguments: card),
+            child: Image.file(File(card.imageUrlSmall[0]))
+          )
+      ],
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yugioh_flutter_app/providers/cards_provider.dart';
 import 'package:yugioh_flutter_app/screens/cards_screen.dart';
+import 'package:yugioh_flutter_app/screens/details_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,6 +21,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: const CardsScreen(),
+        routes: {
+          '/details': (context) => const DetailsScreen(),
+        },
       ),
     );
   }
