@@ -124,7 +124,7 @@ class _FilterFormState extends State<FilterForm> {
       "race": _raceController,
       "atk": _atkController,
       "def": _defController,
-      "scale": _scaleController,
+      "card_scale": _scaleController,
       "linkmarkers": _linkMarkerController,
       "linkval": _linkValController,
     };
