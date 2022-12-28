@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:yugioh_flutter_app/components/filter_form.dart';
 import 'package:yugioh_flutter_app/components/show_cards.dart';
 import 'package:yugioh_flutter_app/providers/cards_provider.dart';
 
@@ -20,6 +21,31 @@ class CardsScreenState extends State<CardsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('YuGiOh Demo Home Page'),
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              icon: const Icon(Icons.filter_alt_outlined),
+            );
+          }
+        )
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: const <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: Text('Filter', style: TextStyle(color: Colors.white, fontSize: 20)),
+              ),
+            ),
+            FilterForm()
+          ],
+        )
       ),
       body: Center(
         child: Column(

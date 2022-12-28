@@ -9,7 +9,7 @@ class ShowCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cards = Provider.of<Cards>(context).cards;
+    final cards = Provider.of<Cards>(context, listen: true).cards;
     return GridView.count(
       crossAxisCount: 2,
       crossAxisSpacing: 10,

@@ -7,9 +7,9 @@ import 'package:yugioh_flutter_app/models/card_image.dart';
 import 'package:yugioh_flutter_app/models/ygo_card.dart';
 import 'package:http/http.dart' as http;
 import 'package:yugioh_flutter_app/utils/db_util.dart';
+import 'package:yugioh_flutter_app/utils/api_util.dart';
 
 class Cards with ChangeNotifier {
-  static const String _baseUrl = 'http://192.168.1.3:4000';
   List<YgoCard> _cards = [];
 
   String? _next;
@@ -17,10 +17,6 @@ class Cards with ChangeNotifier {
 
   String? get next => _next;
   String? get prev => _prev;
-
-  Future<http.Response> fetchCards({int? page, int? qSize, String? url}) async {
-    return url != null ? http.get(Uri.parse('$_baseUrl$url')) : http.get(Uri.parse('$_baseUrl/cards/?page=$page&query_size=$qSize'));
-  }
 
   Future<Map<String, List<String>>> addingToDB(Map<String, dynamic> json) async {
     final img = CardImage.fromJson(json);
@@ -64,7 +60,8 @@ class Cards with ChangeNotifier {
     page =  page ?? 1;
     qSize = qSize ?? 20;
     
-    final cards = url != null ? await fetchCards(url: url) : await fetchCards(page: page, qSize: qSize);
+    
+    final cards = url != null ? await APIUtil().fetchCards(url: url) : await APIUtil().fetchCards(page: page, qSize: qSize);
     final Map<String, dynamic> response = jsonDecode(cards.body);
     _cards = [];
 
@@ -95,6 +92,7 @@ class Cards with ChangeNotifier {
 
       _cards.add(YgoCard.fromJson(card));
     }
+
 
     _next = response["data"]["next"];
     _prev = response["data"]["prev"];
