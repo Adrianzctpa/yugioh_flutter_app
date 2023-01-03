@@ -17,6 +17,7 @@ class CardsScreenState extends State<CardsScreen> {
     final ctx = Provider.of<Cards>(context, listen: true);
     final String? prev = ctx.prev;
     final String? next = ctx.next;
+    final bool isFetching = ctx.isFetching;
 
     return Scaffold(
       appBar: AppBar(
@@ -54,18 +55,26 @@ class CardsScreenState extends State<CardsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 IconButton(
-                  onPressed: prev == null ? null : () => ctx.loadCards(url: prev), 
+                  onPressed: prev == null || isFetching ? null : () async {
+                    ctx.setFetching(true);
+                    ctx.loadCards(url: prev);
+                    ctx.setFetching(false);
+                  }, 
                   icon: Icon(
                     Icons.arrow_back,
-                    color: prev == null ? Colors.grey : Colors.blue,
+                    color: prev == null || isFetching ? Colors.grey : Colors.blue,
                   )          
                 ),
                 ElevatedButton(onPressed: () => ctx.loadCards(), child: const Text('Load cards')),
                 IconButton(
-                  onPressed: next == null ? null : () => ctx.loadCards(url: next), 
+                  onPressed: next == null || isFetching ? null : () async {
+                    ctx.setFetching(true);
+                    ctx.loadCards(url: next);
+                    ctx.setFetching(false);
+                  }, 
                   icon: Icon(
                     Icons.arrow_forward,
-                    color: next == null ? Colors.grey : Colors.blue,
+                    color: next == null || isFetching ? Colors.grey : Colors.blue,
                   )          
                 ),
               ],

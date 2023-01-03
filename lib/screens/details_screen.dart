@@ -11,6 +11,37 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {  
+
+  List<String> _buildInfo(YgoCard card) {
+    final info = <String>[];
+    if (!card.cardType.contains('Monster')) return info;
+
+    info.add(card.attribute.toString());
+
+    if (card.cardType.contains('Link')) {
+      info.add('Link Markers: ${card.linkmarkers.toString()}');
+      info.add('ATK: ${card.atk.toString()}');
+      info.add('Link Value: ${card.linkval.toString()}');
+
+      return info;
+    } 
+
+    if (card.cardType.contains('XYZ')) {
+      info.add('Rank: ${card.cardLevel.toString()}');
+    } else {
+      info.add('Level: ${card.cardLevel.toString()}');
+    }
+
+    info.add('ATK: ${card.atk.toString()}');
+    info.add('DEF: ${card.def.toString()}');
+
+    if (card.cardType.contains('Pendulum')) {
+      info.add('Scale: ${card.cardScale.toString()}');
+    }
+
+    return info;
+  }
+
   @override
   Widget build(BuildContext context) {
     final card = ModalRoute.of(context)!.settings.arguments as YgoCard;
@@ -31,12 +62,18 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ),
               ),
               Card(
-                child: Column(
-                  children: [
-                    Text(card.cardName),
-                    Text(card.cardType),
-                    Text(card.description)
-                  ]
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text(card.cardName),
+                      Text(card.cardType),
+                      Text(card.race),
+                      for (final info in _buildInfo(card)) 
+                        Text(info),
+                      Text(card.description),
+                    ]
+                  ),
                 ),
               ),
             ]

@@ -18,6 +18,15 @@ class Cards with ChangeNotifier {
   String? get next => _next;
   String? get prev => _prev;
 
+  bool _isFetching = false;
+
+  bool get isFetching => _isFetching;
+
+  void setFetching(bool value) {
+    _isFetching = value;
+    notifyListeners();
+  }
+
   Future<Map<String, List<String>>> addingToDB(Map<String, dynamic> json) async {
     final img = CardImage.fromJson(json);
     List<String> imageUrl = [];
@@ -60,7 +69,6 @@ class Cards with ChangeNotifier {
     page =  page ?? 1;
     qSize = qSize ?? 20;
     
-    
     final cards = url != null ? await APIUtil().fetchCards(url: url) : await APIUtil().fetchCards(page: page, qSize: qSize);
     final Map<String, dynamic> response = jsonDecode(cards.body);
     _cards = [];
@@ -92,7 +100,6 @@ class Cards with ChangeNotifier {
 
       _cards.add(YgoCard.fromJson(card));
     }
-
 
     _next = response["data"]["next"];
     _prev = response["data"]["prev"];

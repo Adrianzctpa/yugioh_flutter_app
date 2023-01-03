@@ -5,13 +5,13 @@ class YgoCard {
   final String? attribute;
   final String description;
   final String archetype;
-  final int atk;
-  final int def;
-  final int cardLevel;
+  final int? atk;
+  final int? def;
+  final int? cardLevel;
   final String race;
-  final int linkval;
+  final int? linkval;
   final List<String>? linkmarkers;
-  final int cardScale;
+  final int? cardScale;
   final List<String> imageUrl;
   final List<String> imageUrlSmall;
 
@@ -34,7 +34,13 @@ class YgoCard {
   });
 
   factory YgoCard.fromJson(Map<String, dynamic> json) {
-    final linkmark = json['linkmarkers'] != null ? List<String>.from(json['linkmarkers']) : null;
+    final int? atk = json['atk'] != null ? (json['atk']) : null;
+    final int? def = json['def'] != null ? (json['def']) : null;
+    final int? cardLevel = json['card_level'] != null ? (json['card_level']) : null;
+    final int? linkval = json['linkval'] != null ? (json['linkval']) : null;
+    final linkmarkers = json['linkmarkers'] != null ? List<String>.from(json['linkmarkers']) : null;
+    final int? cardScale = json['card_scale'] != null ? (json['card_scale']) : null;
+
     final imgUrl = List<String>.from(json['image_url']);
     final imgUrlSmall = List<String>.from(json['image_url_small']);
 
@@ -45,13 +51,13 @@ class YgoCard {
       cardType: json['card_type'],
       description: json['description'],
       archetype: json['archetype'],
-      atk: json['atk'],
-      def: json['def'],
-      cardLevel: json['card_level'],
+      atk: atk,
+      def: def,
+      cardLevel: cardLevel,
       race: json['race'],
-      linkval: json['linkval'],
-      linkmarkers: linkmark,
-      cardScale: json['card_scale'],
+      linkval: linkval,
+      linkmarkers: linkmarkers,
+      cardScale: cardScale,
       imageUrl: imgUrl,
       imageUrlSmall: imgUrlSmall,
     );
