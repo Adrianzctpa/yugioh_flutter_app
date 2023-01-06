@@ -50,7 +50,7 @@ class Cards with ChangeNotifier {
       await smallFile.writeAsBytes(respSmall.bodyBytes);
     }
 
-    await DBUtil().insert(CardImage(
+    await DBUtil().insertImage(CardImage(
       id: json['id'],
       imageUrl: imageUrl,
       imageUrlSmall: imageUrlSmall,
@@ -70,7 +70,7 @@ class Cards with ChangeNotifier {
     qSize = qSize ?? 20;
     
     final cards = url != null ? await APIUtil().fetchCards(url: url) : await APIUtil().fetchCards(page: page, qSize: qSize);
-    final Map<String, dynamic> response = jsonDecode(cards.body);
+    final Map<String, dynamic> response = await jsonDecode(cards.body);
     _cards = [];
 
     for (final card in response['data']['cards']) {  
@@ -99,6 +99,8 @@ class Cards with ChangeNotifier {
       }
 
       _cards.add(YgoCard.fromJson(card));
+
+      notifyListeners();
     }
 
     _next = response["data"]["next"];

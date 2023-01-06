@@ -5,7 +5,9 @@ import 'package:yugioh_flutter_app/providers/cards_provider.dart';
 import 'package:yugioh_flutter_app/utils/api_util.dart';
 
 class FilterForm extends StatefulWidget {
-  const FilterForm({Key? key}) : super(key: key);
+  const FilterForm({required this.url, Key? key}) : super(key: key);
+
+  final String url;
 
   @override
   State<FilterForm> createState() => _FilterFormState();
@@ -174,16 +176,18 @@ class _FilterFormState extends State<FilterForm> {
               child: createDropdown(Constants.linkMarkerList, 'Link Marker $i', _linkMarkerController, i),
             ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               final filteredUrl = APIUtil().generateFilterString(filterMap);
-              cards.loadCards(url: filteredUrl);
-              Scaffold.of(context).openEndDrawer();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Processing Data')),
               );
+              Navigator.of(context).pushReplacementNamed(widget.url);
+              cards.setFetching(true);
+              await cards.loadCards(url: filteredUrl);
+              cards.setFetching(false);
             }, 
             child: const Text(
-            'Submit'
+              'Submit'
             )
           )
         ]
