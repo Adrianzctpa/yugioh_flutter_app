@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:yugioh_flutter_app/providers/cards_provider.dart';
 import 'package:yugioh_flutter_app/providers/decks_provider.dart';
 import 'package:yugioh_flutter_app/screens/cards_screen.dart';
+import 'package:yugioh_flutter_app/screens/deck_create_screen.dart';
+import 'package:yugioh_flutter_app/screens/deck_edit_screen.dart';
 import 'package:yugioh_flutter_app/screens/deck_screen.dart';
 import 'package:yugioh_flutter_app/screens/details_screen.dart';
 import 'package:yugioh_flutter_app/screens/filter_screen.dart';
@@ -43,7 +45,9 @@ class MyApp extends StatelessWidget {
             '/details': (context) => const DetailsScreen(),
             '/filter': (context) => const FilterScreen(),
             '/cards': (context) => const CardsScreen(),
-            '/decks': (context) =>  const DeckScreen()
+            '/decks': (context) =>  const DeckScreen(),
+            '/deck-create': (context) => const DeckCreateScreen(),
+            '/deck-edit': (context) => const DeckEditScreen(),
           },
         ),
       ),

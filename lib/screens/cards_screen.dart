@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yugioh_flutter_app/components/base_screen.dart';
 import 'package:yugioh_flutter_app/components/show_cards.dart';
+import 'package:yugioh_flutter_app/models/deck.dart';
 import 'package:yugioh_flutter_app/providers/cards_provider.dart';
 
 class CardsScreen extends StatefulWidget {
@@ -19,7 +20,9 @@ class CardsScreenState extends State<CardsScreen> {
     final String? next = ctx.next;
     final bool isFetching = ctx.isFetching;
 
+    final deck = ModalRoute.of(context)!.settings.arguments as Deck?;
     return BaseScreen(
+      title: 'Cards',
       child: Center(
         child: Column(
           children: [
@@ -53,8 +56,8 @@ class CardsScreenState extends State<CardsScreen> {
             ),
             isFetching 
             ? const CircularProgressIndicator() 
-            : const Expanded(
-                child: ShowCards()
+            :  Expanded(
+                child: ShowCards(cards: ctx.cards, deck: deck)
               )
           ],
         ),

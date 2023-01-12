@@ -5,7 +5,7 @@ import 'package:yugioh_flutter_app/utils/db_util.dart';
 
 
 class Decks with ChangeNotifier {
-  List<Deck> _decks = [];
+  final List<Deck> _decks = [];
   bool _beenLoaded = false;
 
   bool get beenLoaded => _beenLoaded;
@@ -18,24 +18,40 @@ class Decks with ChangeNotifier {
   Future<void> loadDecks() async {
     final decks = await DBUtil().getDeckData();
     for (int i = 0; i < decks.length; i++) {
-      _decks.add(Deck.fromJson(decks[i]));
+      final deck = Deck.fromJson(decks[i]);
+      _decks.add(deck);
     }
 
     _beenLoaded = true;
     notifyListeners();
   }
 
-  void addDeck(Deck deck) {
-    if (deck.cards.length > limit) {
-      throw Exception("Deck is too big");
-    }
+  void addDeck(String name) {
+    final now = DateTime.now();
+    final id = now.microsecondsSinceEpoch;
+    final deck = Deck(name: name, id: id, cards: null);
 
-    if (deck.cards.length < min) {
-      throw Exception("Deck is too small");
-    }
+    if (deck.cards != null) {
+      if (deck.cards!.length > limit) {
+        throw Exception("Deck is too big");
+      }
 
+      if (deck.cards!.length < min) {
+        throw Exception("Deck is too small");
+      }
+    }
+    
     DBUtil().insertDeck(deck);
     _decks.add(deck);
+
+    notifyListeners();
+  }
+
+  Future<void> updateDeck(Deck deck) async {
+    await DBUtil().updateDeck(deck);
+
+    final index = _decks.indexWhere((element) => element.id == deck.id);
+    _decks[index] = deck;
 
     notifyListeners();
   }

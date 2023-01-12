@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:path/path.dart' as path;
 import 'package:yugioh_flutter_app/models/card_image.dart';
@@ -28,12 +30,12 @@ class DBUtil {
 
       await db.execute(
         '''
-        CREATE TABLE card_images (id INT NOT NULL, image_url TEXT[], image_url_small TEXT[]);
+        CREATE TABLE card_images (id INTEGER NOT NULL, image_url TEXT [], image_url_small TEXT []);
         '''
       );
       await db.execute(
         '''
-        CREATE TABLE decks (id INT NOT NULL, name TEXT, cards INT[]);
+        CREATE TABLE decks (id INTEGER NOT NULL, name TEXT, cards TEXT []);
         '''
       );
     });
@@ -83,6 +85,20 @@ class DBUtil {
       'decks',
       where: 'id = ?',
       whereArgs: [id],
+    );
+  }
+
+  Future<void> updateDeck(Deck deck) async {
+    final dbClient = await database;
+    await dbClient.update(
+      'decks',
+      {
+        'id': deck.id,
+        'name': deck.name,
+        'cards': jsonEncode(deck.cards),
+      },
+      where: 'id = ?',
+      whereArgs: [deck.id],
     );
   }
 

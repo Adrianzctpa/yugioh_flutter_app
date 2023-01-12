@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 class BaseScreen extends StatelessWidget {
-  const BaseScreen({required this.child, Key? key}) : super(key: key);
+  const BaseScreen({required this.child, required this.title, Key? key}) : super(key: key);
   final Widget child;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('YuGiOh Demo Home Page'),
+        title: Text(title),
         leading: Builder(
           builder: (context) {
             return IconButton(
@@ -42,7 +43,7 @@ class BaseScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 onPressed: () => Navigator.of(context).pushNamed('/decks'), 
-                child: const Text('Deck Building')
+                child: const Text('Decks')
               ),
             ),
             Padding(

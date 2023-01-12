@@ -13,11 +13,25 @@ class ShowDecks extends StatelessWidget {
     return ListView.builder(
       itemCount: decks.length,
       itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(decks[index].name),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () => Provider.of<Decks>(context, listen: false).removeDeck(decks[index]),
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(child: Text(decks[index].name)),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () => Navigator.of(context).pushNamed('/deck-edit', arguments: decks[index]),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => prov.removeDeck(decks[index]),
+                  ),
+                ]
+              ),
+            ),
           ),
         );
       },

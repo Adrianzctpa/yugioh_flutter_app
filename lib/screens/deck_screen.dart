@@ -18,16 +18,17 @@ class _DeckScreenState extends State<DeckScreen> {
     final decks = prov.decks;
 
     return BaseScreen(
+      title: 'Decks',
       child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
-                    onPressed: null, 
-                    child: Text('Add Deck')
+                    onPressed: () => Navigator.of(context).pushNamed('/deck-create'), 
+                    child: const Text('Add Deck')
                   ),
                 )
               ],
