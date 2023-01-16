@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:yugioh_flutter_app/models/deck.dart';
+import 'package:yugioh_flutter_app/models/ygo_card.dart';
 import 'package:yugioh_flutter_app/utils/db_util.dart';
 
 
@@ -14,6 +15,44 @@ class Decks with ChangeNotifier {
   static const int min = 40;
 
   List<Deck> get decks => _decks;
+
+  Future<void> removeCardFromDeck(YgoCard card, Deck deck) async {
+    final trueDeck = _decks.firstWhere((element) => element.id == deck.id); 
+
+    for (int i = 0; i < trueDeck.cards!.length; i++) {
+      if (trueDeck.cards![i].cardName == card.cardName) {
+        trueDeck.cards!.removeAt(i);
+        break;
+      }
+    }
+
+    await DBUtil().updateDeck(trueDeck);
+    notifyListeners();
+  }
+
+  Future<void> addCardToDeck(YgoCard card, Deck deck) async {
+    final trueDeck = _decks.firstWhere((element) => element.id == deck.id); 
+    if (trueDeck.cards == null) {
+      trueDeck.cards = [card];
+    } else {
+      int appearences = 0;
+      
+      for (final c in trueDeck.cards!) {
+        if (c.cardName == card.cardName) {
+          appearences++;
+        }
+      }
+
+      if (appearences >= 3) {
+        return;
+      }
+
+      trueDeck.cards!.add(card);
+    }
+
+    await DBUtil().updateDeck(trueDeck);
+    notifyListeners();
+  }
 
   Future<void> loadDecks() async {
     final decks = await DBUtil().getDeckData();
@@ -48,6 +87,14 @@ class Decks with ChangeNotifier {
   }
 
   Future<void> updateDeck(Deck deck) async {
+    // if (deck.cards!.length > limit) {
+    //   throw Exception("Deck is too big");
+    // }
+
+    // if (deck.cards!.length < min) {
+    //   throw Exception("Deck is too small");
+    // }
+
     await DBUtil().updateDeck(deck);
 
     final index = _decks.indexWhere((element) => element.id == deck.id);

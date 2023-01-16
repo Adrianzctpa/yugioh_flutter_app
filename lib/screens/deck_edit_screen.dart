@@ -18,7 +18,7 @@ class _DeckEditScreenState extends State<DeckEditScreen> {
       appBar: AppBar(
         title: const Text('Deck Edit'),
       ),
-      body: DeckForm(text: 'Edit', deck: deck)
+      body: DeckForm(text: 'Change Name', deck: deck)
     );
   }
 }

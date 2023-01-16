@@ -50,6 +50,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     final prov = Provider.of<Decks>(context, listen: false);
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final card = args['card'] as YgoCard;
+    final decks = prov.decks;
     Deck? deck;
 
     if (args['deck'] != null) { 
@@ -82,35 +83,33 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       for (final info in _buildInfo(card)) 
                         Text(info),
                       Text(card.description),
-                      if (deck != null)
-                        TextButton(
-                          onPressed: () async {           
-                            if (deck!.cards == null) {
-                              deck.cards = [card];
-                            } else {
-                              int appearences = 0;
-                              
-                              for (final c in deck.cards!) {
-                                if (c.cardName == card.cardName) {
-                                  appearences++;
-                                }
-                              }
-
-                              if (appearences >= 3) {
-                                return;
-                              }
-                              
-
-                              deck.cards!.add(card);
-                            }
-                            await prov.updateDeck(deck);
-                          },
-                          child: const Text('Add to Deck')
-                        )
                     ]
                   ),
                 ),
               ),
+              if (decks.isNotEmpty)
+                Column(
+                  children: [
+                    DropdownButton<Deck>(
+                      value: deck,
+                      items: decks.map((e) => DropdownMenuItem<Deck>(
+                        value: e,
+                        child: Text(e.name),
+                      )).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          deck = value;
+                        });
+                      },
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        prov.addCardToDeck(card, deck!);
+                      },
+                      child: const Text('Add to Deck'),
+                    ),
+                  ],
+                ),
             ]
           ),
         ),
