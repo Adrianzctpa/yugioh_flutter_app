@@ -16,6 +16,13 @@ class Constants {
     'Top',
     'Top-Right'
   ];
+
+  static const extraDeckSummons = [
+    'Fusion',
+    'Synchro',
+    'XYZ',
+    'Link',
+  ];
   
   static const typeList = [
     'None',

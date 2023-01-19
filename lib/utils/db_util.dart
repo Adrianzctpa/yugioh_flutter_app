@@ -35,7 +35,7 @@ class DBUtil {
       );
       await db.execute(
         '''
-        CREATE TABLE decks (id INTEGER NOT NULL, name TEXT, cards TEXT []);
+        CREATE TABLE decks (id INTEGER NOT NULL, name TEXT, cards TEXT [], eDeck TEXT [], sDeck TEXT []);
         '''
       );
     });
@@ -50,6 +50,8 @@ class DBUtil {
         'id': deck.id,
         'name': deck.name,
         'cards': deck.cards,
+        'eDeck': deck.eDeck,
+        'sDeck': deck.sDeck,
       },
       conflictAlgorithm: sql.ConflictAlgorithm.replace,
     );
@@ -96,6 +98,8 @@ class DBUtil {
         'id': deck.id,
         'name': deck.name,
         'cards': jsonEncode(deck.cards),
+        'eDeck': jsonEncode(deck.eDeck),
+        'sDeck': jsonEncode(deck.sDeck),
       },
       where: 'id = ?',
       whereArgs: [deck.id],

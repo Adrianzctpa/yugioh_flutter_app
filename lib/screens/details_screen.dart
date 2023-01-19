@@ -14,6 +14,7 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {  
+  Deck? deck;
 
   List<String> _buildInfo(YgoCard card) {
     final info = <String>[];
@@ -51,12 +52,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final card = args['card'] as YgoCard;
     final decks = prov.decks;
-    Deck? deck;
 
-    if (args['deck'] != null) { 
-      deck = args['deck'] as Deck;
-    }
-   
     return Scaffold(
       appBar: AppBar(
         title: Text(card.cardName),
@@ -105,6 +101,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     ElevatedButton(
                       onPressed: () {
                         prov.addCardToDeck(card, deck!);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing')),
+                        );
                       },
                       child: const Text('Add to Deck'),
                     ),
