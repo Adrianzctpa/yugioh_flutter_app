@@ -14,6 +14,12 @@ class CardsScreen extends StatefulWidget {
 
 class CardsScreenState extends State<CardsScreen> {
   @override
+  void initState() {
+    super.initState();
+    Provider.of<Cards>(context, listen: false).loadCards();
+  }
+  
+  @override
   Widget build(BuildContext context) {
     final ctx = Provider.of<Cards>(context, listen: true);
     final String? prev = ctx.prev;
@@ -40,7 +46,6 @@ class CardsScreenState extends State<CardsScreen> {
                     color: prev == null || isFetching ? Colors.grey : Colors.blue,
                   )          
                 ),
-                ElevatedButton(onPressed: () => ctx.loadCards(), child: const Text('Load cards')),
                 IconButton(
                   onPressed: next == null || isFetching ? null : () async {
                     ctx.setFetching(true);
@@ -54,11 +59,7 @@ class CardsScreenState extends State<CardsScreen> {
                 ),
               ],
             ),
-            isFetching 
-            ? const CircularProgressIndicator() 
-            :  Expanded(
-                child: ShowCards(cards: ctx.cards, deck: deck)
-              )
+            isFetching ? const CircularProgressIndicator() : Expanded(child: ShowCards(cards: ctx.cards, deck: deck)),
           ],
         ),
       ),

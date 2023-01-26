@@ -18,7 +18,7 @@ class Cards with ChangeNotifier {
   String? get next => _next;
   String? get prev => _prev;
 
-  bool _isFetching = false;
+  bool _isFetching = true;
 
   bool get isFetching => _isFetching;
 
@@ -63,6 +63,7 @@ class Cards with ChangeNotifier {
   }
 
   Future<void> loadCards({int? page, int? qSize, String? url}) async {
+    _isFetching = true;
     _prev = null;
     _next = null;
     
@@ -99,13 +100,12 @@ class Cards with ChangeNotifier {
       }
 
       _cards.add(YgoCard.fromJson(card));
-
-      notifyListeners();
     }
 
     _next = response["data"]["next"];
     _prev = response["data"]["prev"];
 
+    _isFetching = false;
     notifyListeners();
   }
 

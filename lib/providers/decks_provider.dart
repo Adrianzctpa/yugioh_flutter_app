@@ -12,10 +12,18 @@ class Decks with ChangeNotifier {
 
   bool get beenLoaded => _beenLoaded;
 
-  static const int limit = 60;
-  static const int min = 40;
+  static const int _limit = 60;
+  static const int _min = 40;
+
+  static const int _extraAndSideLimit = 15;
+  static const int _extraAndSideMin = 0;
 
   List<Deck> get decks => _decks;
+  int get limit => _limit;
+  int get min => _min;
+
+  int get extraAndSideLimit => _extraAndSideLimit;
+  int get extraAndSideMin => _extraAndSideMin;
 
   bool extraCheck(YgoCard card) {
     const edPatterns = Constants.extraDeckSummons;
@@ -43,16 +51,29 @@ class Decks with ChangeNotifier {
     if (extraCheck(card)) {
       removeCard(card, trueDeck.eDeck!);
     } else {
-      removeCard(card, trueDeck.cards!);
+      if (trueDeck.sDeck != null && trueDeck.sDeck!.contains(card)) {
+        removeCard(card, trueDeck.sDeck!);
+      } else {
+        removeCard(card, trueDeck.cards!);
+      }
     }
 
     await DBUtil().updateDeck(trueDeck);
     notifyListeners();
   }
 
-  List<YgoCard> modifyDeck(List<YgoCard>? cards, YgoCard card) {
+  List<YgoCard> modifyDeck(List<YgoCard>? cards, YgoCard card, [bool isSide = false, int mainApps = 0]) {
+    final isExtra = extraCheck(card);
     if (cards != null) {
-      if (!checkAppearences(cards, card)) return cards;
+      int sideApps = isSide ? checkAppearences(cards, card) : 0;
+      int apps = isSide ? mainApps + sideApps : checkAppearences(cards, card);
+
+      // If it is extra or side, check by limit and return
+      if (isExtra && cards.length >= _extraAndSideLimit || isSide && cards.length >= _extraAndSideLimit) return cards;
+
+      if (!isExtra && !isSide && cards.length >= _limit) return cards;
+
+      if (apps == 3 || (apps + 1) > 3) return cards;
 
       cards.add(card);
     } else {
@@ -62,7 +83,7 @@ class Decks with ChangeNotifier {
     return cards;
   }
 
-  bool checkAppearences(List<YgoCard> deck, YgoCard card) {
+  int checkAppearences(List<YgoCard> deck, YgoCard card) {
     int appearences = 0;
       
     for (final c in deck) {
@@ -72,10 +93,10 @@ class Decks with ChangeNotifier {
     }
 
     if (appearences >= 3) {
-      return false;
+      return 3;
     }
 
-    return true;
+    return appearences;
   }
 
   Future<void> addCardToDeck(YgoCard card, Deck deck) async {
@@ -86,7 +107,14 @@ class Decks with ChangeNotifier {
     if (isExtra) {
       trueDeck.eDeck = modifyDeck(trueDeck.eDeck, card);
     } else {
-      trueDeck.cards = modifyDeck(trueDeck.cards, card);
+      final isSide = trueDeck.cards!.length >= _limit && checkAppearences(trueDeck.cards!, card) < 3;
+      
+      if (isSide) {
+        int apps = checkAppearences(trueDeck.cards!, card);
+        trueDeck.sDeck = modifyDeck(trueDeck.sDeck, card, true, apps);
+      } else {
+        trueDeck.cards = modifyDeck(trueDeck.cards, card);
+      }
     }
 
     await DBUtil().updateDeck(trueDeck);
@@ -108,16 +136,6 @@ class Decks with ChangeNotifier {
     final now = DateTime.now();
     final id = now.microsecondsSinceEpoch;
     final deck = Deck(name: name, id: id, cards: null, eDeck: null, sDeck: null);
-
-    if (deck.cards != null) {
-      if (deck.cards!.length > limit) {
-        throw Exception("Deck is too big");
-      }
-
-      if (deck.cards!.length < min) {
-        throw Exception("Deck is too small");
-      }
-    }
     
     DBUtil().insertDeck(deck);
     _decks.add(deck);
