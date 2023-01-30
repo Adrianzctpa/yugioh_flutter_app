@@ -53,6 +53,13 @@ class BaseScreen extends StatelessWidget {
                 child: const Text('Filter')
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pushNamed('/filter', arguments: '/decks'), 
+                child: const Text('Banlist')
+              ),
+            )
           ],
         )
       ),

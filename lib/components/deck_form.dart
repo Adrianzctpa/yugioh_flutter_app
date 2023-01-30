@@ -59,7 +59,7 @@ class _DeckFormState extends State<DeckForm> {
                               _cards = cardsMap['main'];
                             });
                           }, 
-                          child: const Text('Normal Deck')
+                          child: const Text('Main Deck')
                         ),
                       ),
                       Padding(

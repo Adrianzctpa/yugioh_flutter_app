@@ -25,6 +25,22 @@ class Decks with ChangeNotifier {
   int get extraAndSideLimit => _extraAndSideLimit;
   int get extraAndSideMin => _extraAndSideMin;
 
+  List<YgoCard> testHand(List<YgoCard> cards) {
+    final temp = [...cards];
+    final shuffledDeck = temp..shuffle();
+    final hand = <YgoCard>[];
+
+    for (int i = 0; i < 5; i++) {
+      hand.add(shuffledDeck[i]);
+    }
+    
+    for (var element in hand) { 
+      print(element.cardName);
+    }
+
+    return hand;
+  }
+
   bool extraCheck(YgoCard card) {
     const edPatterns = Constants.extraDeckSummons;
     for (final pattern in edPatterns) {
